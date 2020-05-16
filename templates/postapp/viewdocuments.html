@@ -1,0 +1,286 @@
+{% extends "postapp/base1.html" %}
+{% block css %}
+<style>
+
+
+  .ml1 {
+    font-weight: 900;
+    font-size: 4.5em;
+    color:whitesmoke;
+  }
+
+  .ml1 .letter {
+    display: inline-block;
+    line-height: 1em;
+  }
+
+  .ml1 .text-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-left: 430;
+    margin-top: 10;
+    padding-top: 0.1em;
+    padding-right: 0.05em;
+    padding-bottom: 0.15em;
+  }
+
+  .ml1 .line {
+
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    background-color: #fff;
+    transform-origin: 0 0;
+  }
+
+  .ml1 .line1 { top: 0; }
+  .ml1 .line2 { bottom: 0; }
+</style>
+{% endblock css %}
+{% block body %}
+<h1 class="ml1">
+    <span class="text-wrapper">
+    <span class="line line1"></span>
+    <span class="letters">IITJGRAM</span>
+    <span class="line line2"></span>
+    </span>
+</h1>
+
+
+<script>
+  // Wrap every letter in a span
+  var textWrapper = document.querySelector('.ml1 .letters');
+  textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+
+  anime.timeline({loop: false})
+    .add({
+      targets: '.ml1 .letter',
+      scale: [10,1],
+      opacity: [0,1],
+      translateZ: 0,
+      easing: "easeOutExpo",
+      duration: 600,
+      delay: (el, i) => 70 * (i+1)
+    }).add({
+      targets: '.ml1 .line',
+      scaleX: [0,1],
+      opacity: [0.5,1],
+      easing: "easeOutExpo",
+      duration: 700,
+      offset: '-=875',
+      delay: (el, i, l) => 80 * (l - i)
+    });
+</script>
+
+    
+{% for i in postdocuments %}
+      <div class="container m/-4" style="margin-top: 18; width:580;" id="post_div">
+          <div class="card">
+              <div class="card-header" style="font-size:20px;color:rgb(19, 18, 18)">
+              <a href="{% url 'viewprofile1' i.author.id %}" style="text-decoration: none; color:rgb(1, 1, 184);">{{i.author}}</a> <small>{{i.created_date}}</small>
+              </div>
+              <div class="card-body">
+              <h5 class="card-title" style="margin-bottom: 2;">{{i.caption}}</h5>
+              {% if i.pdf %}
+              <!--<h5>{{i}}</h5>-->
+                
+              {% endif %}
+              <div style="margin-top: 15;">
+              
+
+              <a href="{% url 'comment' i.id %}" class="btn btn-outline-warning" style="height: 29px; widows: 20px; padding-top:0.5; font-size:15px; margin-left: 6;  margin-bottom: 19;">Comment</a> <!-- new -->
+              <a href="{{i.pdf.url}}" class="btn btn-outline-dark" style="height: 29px; widows: 20px; padding-top:0.5; font-size:15px; margin-left: 6;  margin-bottom: 19;">Open document</a>
+              {% if request.user == i.author %}
+                <form action="{% url 'delete_postdocument' i.id %}" method="POST">
+                  {% csrf_token %}
+                  <span><button type="submit" class="btn btn-outline-danger" style="height: 29px; width: 90px; padding-top:0.5; font-size:15px; margin-left: 410; margin-top:-50;  margin-bottom: -19;">Delete</button></span>
+                </form>
+              {% endif %}
+              </div>
+              </div>
+          </div>
+      </div>
+{% endfor %}
+
+{% endblock body %}
+
+<!--modals for post-->
+{% block modals  %}
+<!-- Button trigger modal -->
+
+  
+  <!-- Modal -->
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">create your post</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form action="/post/" method="POST", enctype="multipart/form-data">
+                {% csrf_token %}
+                <label for="image">Image : </label>
+                <input type="file" name="image" id="image">
+                <br><br>
+                <label for="capttext">Caption : </label>
+                <textarea name="captions" id="captions" cols="55" rows="10" placeholder="write your caption" class="ml-4"></textarea>
+                <hr size='15'>
+                
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Share</button>
+            </form>
+        </div>
+        
+        
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModal1Label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModal1Label">create your post</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form action="/postlink/" method="POST", enctype="multipart/form-data">
+              {% csrf_token %}
+              <label for="capttext">Caption : </label>
+              <textarea name="captions" id="captions" cols="55" rows="6" placeholder="write your caption" class="ml-4"></textarea>
+              <hr size='15'>
+              <label for="link">Share link : </label>
+              <textarea name="link" id="link" cols="55" rows="6" placeholder=" link " class="ml-4"></textarea>
+              <hr size='15'>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Share</button>
+          </form>
+      </div>
+      
+      
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModal2Label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModal2Label">create your post</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form action="/postvideo/" method="POST", enctype="multipart/form-data">
+              {% csrf_token %}
+              <label for="video">Video : </label>
+              <input type="file" name="video" id="video">
+              <br><br>
+              <label for="capttext">Caption : </label>
+              <textarea name="captions" id="captions" cols="55" rows="10" placeholder="write your caption" class="ml-4"></textarea>
+              <hr size='15'>
+              
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Share</button>
+          </form>
+      </div>
+      
+      
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModal3Label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModal3Label">create your post</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form action="/postdocument/" method="POST", enctype="multipart/form-data">
+              {% csrf_token %}
+              <label for="document">document : </label>
+              <input type="file" name="document" id="document">
+              <br><br>
+              <label for="capttext">Caption : </label>
+              <textarea name="captions" id="captions" cols="55" rows="10" placeholder="write your caption" class="ml-4"></textarea>
+              <hr size='15'>
+              
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Share</button>
+          </form>
+      </div>
+      
+      
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="profileModalLong" tabindex="-1" role="dialog" aria-labelledby="profileModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="profileModalLongTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/editprofile/" method="POST", enctype="multipart/form-data">
+          {% csrf_token %}
+          <label for="profileimage">Profile_Image : </label>
+          <input type="file" name="profileimage" id="profileimage" default='user_image/b.PNG'>
+          <br><br>
+          <label for="about">About : </label>
+          <textarea name="about" id="about" cols="40" rows="3" placeholder=" write something about you " class="ml-4"></textarea>
+          <hr size='15'>
+          <label for="branch">branch : </label>
+          <textarea name="branch" id="branch" cols="30" rows="1" placeholder=" your branch " class="ml-4"></textarea>
+          <hr size='15'>
+          <label for="location">location : </label>
+          <textarea name="location" id="location" cols="30" rows="1" placeholder=" your location " class="ml-4"></textarea>
+          <hr size='15'>
+          <label for="facebookaccount">facebookaccount : </label>
+          <textarea name="facebookaccount" id="facebookaccount" cols="30" rows="1" placeholder=" link of your facebook profile " class="ml-4"></textarea>
+          <hr size='15'>
+          <label for="instagramaccount">instagramaccount : </label>
+          <textarea name="instagramaccount" id="instagramaccount" cols="30" rows="1" placeholder=" link of your instagram profile " class="ml-4"></textarea>
+          <hr size='15'>
+          <label for="twitteraccount">twitteraccount : </label>
+          <textarea name="twitteraccount" id="twitteraccount" cols="30" rows="1" placeholder=" link of your twitter profile " class="ml-4"></textarea>
+          <hr size='15'>
+          <label for="linkedinaccount">linkedinaccount : </label>
+          <textarea name="linkedinaccount" id="linkedinaccount" cols="30" rows="1" placeholder=" link of your linkedin profile " class="ml-4"></textarea>
+          <hr size='15'>
+          <label for="phone">phone : </label>
+          <textarea name="phone" id="phone" cols="30" rows="1" placeholder=" mobile number " class="ml-4"></textarea>
+          <hr size='15'>
+          <label for="dob">date of birth : </label>
+          <textarea name="dob" id="dob" cols="30" rows="1" placeholder=" your date of birth " class="ml-4"></textarea>
+          <hr size='15'>
+          <label for="professional_skills">skills : </label>
+          <textarea name="professional_skills" id="professional_skills" cols="30" rows="1" placeholder=" ',' separeted skills " class="ml-4"></textarea>
+          <hr size='15'>
+          
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Done</button>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock modals %}

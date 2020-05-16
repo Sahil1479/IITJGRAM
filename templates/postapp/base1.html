@@ -1,0 +1,140 @@
+<html>
+    <head>
+        
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <style>
+            body{
+                background-color:rgba(49, 47, 47, 0.658);
+            }
+            
+                /* Style the tab */
+            .tab {
+                overflow: hidden;
+                border: 1px solid #ccc;
+                background-color: #f1f1f1;
+                }
+                
+                /* Style the buttons that are used to open the tab content */
+                .tab a {
+                background-color: inherit;
+                float: left;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                padding: 14px 16px;
+                transition: 0.3s;
+                }
+                
+                /* Change background color of buttons on hover */
+                .tab a:hover {
+                background-color: #ddd;
+                }
+                
+                /* Create an active/current tablink class */
+                .tab a.active {
+                background-color: #ccc;
+                }
+                
+                /* Style the tab content */
+                .tabcontent {
+                display: none;
+                padding: 6px 12px;
+                border: 1px solid #ccc;
+                border-top: none;
+                }
+        </style>
+        {% block css %}
+             
+        {% endblock css %}
+        
+      
+        
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v7.0"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+      </head>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  {% if request.user %}
+    <a class="navbar-brand" href="">Hello, {{request.user}}</a>
+  {% else %}
+    <a class="navbar-brand" href="">IITJGRAM</a>
+  {% endif %}
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      
+      <li class="nav-item active">
+        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+      </li>
+      
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Profile
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          {% if request.user %}
+          <a href="{% url 'viewprofile' %}" style="width: 200px;margin-bottom:5;" type="button" class="btn btn-outline-primary">
+            View Profile
+          </a>
+          {% endif %}
+          <button style="width: 200px;" type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#profileModalLong">
+            Edit Profile
+          </button>
+          
+        </div>
+      </li>
+      
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <!--<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>-->
+
+    </form>
+    <li style="list-style-type: none;" class="nav-item dropdown">
+      <a class="btn btn-outline-primary"  href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Post
+      </a>
+      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <button type="button" style="width: 200px; margin:2;" class="btn btn-outline-primary" data-toggle="modal" style="margin-left: 16;" data-target="#exampleModal">
+          Shareimage
+        </button>
+        <button type="button" style="width: 200px; margin:2;" class="btn btn-outline-primary" data-toggle="modal" style="margin-left: 6;" data-target="#exampleModal2">
+          Sharevideo
+        </button>
+        <button type="button" style="width: 200px; margin:2;" class="btn btn-outline-primary" data-toggle="modal" style="margin-left: 6;" data-target="#exampleModal1">
+          Sharelink
+        </button>
+        <button type="button" style="width: 200px; margin:2;" class="btn btn-outline-primary" data-toggle="modal" style="margin-left: 6;" data-target="#exampleModal3">
+          Sharedoc
+        </button>
+        
+      </div>
+    </li>
+
+    
+    <a href="{% url 'logout' %}" class="btn btn-outline-secondary" style="margin-left: 6;">logout</a>
+    {% block modals %}
+    {% endblock modals %}
+  </div>
+
+</nav>     
+    <body>
+        <div class="tab">
+            <a style="text-decoration: none; color:black" href="{% url 'viewimages' %}" class="tablinks">Images</a>
+            <a class="tablinks" style="text-decoration: none; color:black" href="{% url 'viewlinks' %}">Links</a>
+            <a class="tablinks" style="text-decoration: none; color:black" href="{% url 'viewvideos' %}">Videos</a>
+            <a class="tablinks" style="text-decoration: none; color:black" href="{% url 'viewdocuments' %}">Documents</a>
+        </div>
+        {% block body %}
+          <h1 style="font-size:250; margin-top: 50;text-align:center;">IITJGRAM</h1>
+        {% endblock body %}
+    </body>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    
+</html>

@@ -1,0 +1,43 @@
+{% extends "postapp/base1.html" %}
+
+{% block body %}
+<div style="background-color: rgb(154, 156, 148);">
+<div style="height:50;width:60;background-color:rgb(90, 99, 77);">
+<a href="{% url 'home' %}" style="text-decoration:none; color:cornsilk; height:40;width:60;text-align:center;font-size:30px;font-size:30px; padding-left:5px;padding-top:5px; "><--</a>
+</div>
+</div>
+<div class="my-4 mx-4 container">
+    <form action="" method="POST">
+        {% csrf_token %}
+        <div class="form-group row">
+            <label for="comment" class="col-sm-2 col-form-label" style="font-size: 26px;">Comment</label>
+            
+              
+            <input type="text" name="comment" id="comment" style="width:350;" placeholder="  write your comment">
+            
+               
+        </div>
+        <button type="submit" class="btn btn-primary">Done</button>   
+    </form>
+</div>
+{% for j in comment_objects %}
+<div class="my-4 mx-4 container">
+    <div class="card">
+        <div class="card-header" style="font-size:20px; height: 40px; padding-top:7px;">
+          {{j.author}}       <small>    {{j.created_date}}</small>
+        </div>
+        <div class="card-body" style="height: auto; padding-top:7px; padding-bottom:2px;">
+          <blockquote class="blockquote mb-0">
+            <p>{{j.comments}}</p>
+            
+          </blockquote>
+        </div>
+      </div>
+</div>
+{% endfor %}
+
+{% endblock body %}
+
+
+
+
